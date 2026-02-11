@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Mindful App</title>
+  <link rel="stylesheet" href="style.css">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+
+<body>
+
+<div class="phone">
+
+  <header>
+    <h1>Good Morning, <span>User</span></h1>
+    <input type="text" placeholder="Search for mindful exercises">
+  </header>
+
+  <section class="featured-routine">
+    <div class="routine-card">
+      <p>Morning Routine</p>
+      <!-- ONLY CHANGE: onclick added -->
+      <button onclick="startMeditation()">Start</button>
+    </div>
+  </section>
+
+  <section>
+    <h2>Try out more exercises!</h2>
+    <div class="exercise-card">
+      <div class="image"></div>
+      <h3>Morning Gratitude</h3>
+      <button onclick="startMeditation()">Start new exercise!</button>
+      <p>
+        A morning workout fosters gratitude by reframing exercise as a privilege rather than a chore.
+      </p>
+    </div>
+  </section>
+
+  <nav class="bottom-nav">
+    <span>🏠 Home</span>
+    <span>👤 Profile</span>
+  </nav>
+
+</div>
+
+<!-- ONLY ADDITION: JavaScript -->
+<script>
+function startMeditation() {
+
+  const duration = prompt("Enter meditation duration in minutes (e.g., 5, 10):");
+  const minutes = parseFloat(duration);
+
+  if (isNaN(minutes) || minutes <= 0) {
+    alert("Please enter a positive number.");
+    return;
+  }
+
+  const totalSeconds = minutes * 60;
+  const startTime = Date.now();
+
+  const prompts = [
+    "Close your eyes gently, or soften your gaze.",
+    "Bring your attention to your breath. Notice the natural rhythm.",
+    "Feel the air entering and leaving your body.",
+    "If your mind wanders, gently bring it back to your breath.",
+    "Notice any sensations in your body without judgment.",
+    "Let go of any thoughts or feelings that arise, letting them pass like clouds.",
+    "Relax your shoulders, release any tension in your jaw.",
+    "Breathe in peace, breathe out tension.",
+    "Be present in this moment, fully aware of your existence."
+  ];
+
+  let promptIndex = 0;
+  let promptInterval = 10000;
+  let nextPromptTime = Date.now() + promptInterval;
+
+  const meditationWindow = window.open("", "_blank");
+  meditationWindow.document.write("<h2>Meditation Started</h2>");
+
+  const timer = setInterval(() => {
+    const elapsed = Math.floor((Date.now() - startTime) / 1000);
+
+    if (elapsed >= totalSeconds) {
+      clearInterval(timer);
+      meditationWindow.document.write("<p><strong>Meditation complete. Welcome back.</strong></p>");
+      return;
+    }
+
+    if (Date.now() >= nextPromptTime) {
+      const mins = Math.floor(elapsed / 60);
+      const secs = elapsed % 60;
+
+      meditationWindow.document.write(
+        `<p>[${mins}:${secs.toString().padStart(2, "0")}] ${prompts[promptIndex]}</p>`
+      );
+
+      promptIndex++;
+      nextPromptTime = Date.now() + promptInterval;
+
+      if (promptIndex >= prompts.length) {
+        prompts.sort(() => Math.random() - 0.5);
+        promptIndex = 0;
+        nextPromptTime = Date.now() + promptInterval * 2;
+      }
+    }
+  }, 1000);
+}
+</script>
+
+</body>
+</html>
